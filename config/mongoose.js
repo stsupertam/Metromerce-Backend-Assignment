@@ -6,8 +6,8 @@ module.exports = function() {
     mongoose.Promise = global.Promise
     var db = mongoose.connect(config.mongoUri, { useMongoClient: true })
 
-    require('../app/models/user.model')
     require('../app/models/state.model')
+    require('../app/models/user.model')
 
     return db
 }
