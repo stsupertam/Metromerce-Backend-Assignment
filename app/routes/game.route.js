@@ -3,9 +3,9 @@ module.exports = function(app) {
     app.route('/start')
         .post(game.start)
     app.route('/hit')
-        .post(game.hit)
+        .get(game.hit)
     app.route('/stand')
-        .post(game.stand)
+        .get(game.stand)
     app.route('/leaderboard')
-        .post(game.leaderboard)
+        .get(game.leaderboard)
 }
