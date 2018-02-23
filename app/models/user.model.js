@@ -22,6 +22,10 @@ var UserSchema = new Schema({
         type: Number,
         default: 0
     },
+    blackjace: {
+        type: Number,
+        default: 0
+    },
     state: State
 }, { strict: true })
 
