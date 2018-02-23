@@ -24,5 +24,24 @@ module.exports = {
             dealCard(deck, randomCard)
         }
         return randomCard
+    },
+    calculatePoint: function(hand) {
+        var totalPoint = 0
+        for (var i in hand) {
+            switch(hand[i].cardName) {
+                case 'A':
+                    totalPoint += Number(11)
+                    break
+                case 'J':
+                case 'Q':
+                case 'K':
+                    totalPoint += Number(10)
+                    break
+                default:
+                    totalPoint += Number(hand[i].cardName)
+                    break
+            }
+        }
+        return totalPoint
     }
 }
