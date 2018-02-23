@@ -210,7 +210,7 @@ exports.isExist = function(req, res, next) {
             console.log(user)
             if(!user){
                 return next()
-            } else {
+            } else if (!user.state.active){
                 user.state.active = true
                 user.state.expireTime = 10
                 user.state.userCards = randomCard(user.state.deck, 2)
@@ -223,6 +223,8 @@ exports.isExist = function(req, res, next) {
                     .catch((err) => {
                         return next(err)
                     })
+            } else {
+                return res.json({ error: 'User\'s currently playing'})
             }
         })
         .catch((err) => {
