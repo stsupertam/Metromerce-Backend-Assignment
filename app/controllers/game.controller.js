@@ -1,6 +1,8 @@
 const User = require('mongoose').model('User')
 const State = require('mongoose').model('State')
-const { dealCard, returnCardToDeck } = require('../helper/cards')
+const { dealCard } = require('../helper/cards')
+const { returnCardToDeck } = require('../helper/cards')
+const { randomCard } = require('../helper/cards')
 
 var calculatePoint = function(hand) {
     var totalPoint = 0
@@ -132,7 +134,10 @@ exports.hit = function(req, res, next) {
     var state = req.user.state
     var deck = state.deck
     var userCards = state.userCards
+
     dealCard(deck, userCards)
+
+    state.expireTime = 10
     User.findOneAndUpdate({ 
             user: req.user.user
         }, 
@@ -149,15 +154,14 @@ exports.hit = function(req, res, next) {
 
 exports.stand = function(req, res, next) {
     var state = req.user.state
+    var result = getResult(state)
+    var ratio = 100 * (req.user.win / ((req.user.win + req.user.lose) + 1))
     var userCards = state.userCards.slice()
     var cpuCards = state.cpuCards.slice()
     var response = {
         userCards: userCards,
         cpuCards: cpuCards
     }
-    var result = getResult(state)
-
-    state.active = false
     returnCardToDeck(state.deck, [ state.cpuCards, state.userCards ])
 
     if(result.win != 0) {
@@ -168,11 +172,12 @@ exports.stand = function(req, res, next) {
     } else {
         response.message = 'You lose'
     }
-    User.findOneAndUpdate({ 
-            user: req.user.user
-        }, 
+
+    state.active = false
+    User.findOneAndUpdate({ user: req.user.user }, 
         { 
             $inc: result,
+            ratio: ratio,
             state: state
         })
         .then((user) => {
@@ -184,7 +189,43 @@ exports.stand = function(req, res, next) {
 }
 
 exports.leaderboard = function(req, res, next) {
+    User.find({})
+        .sort('-ratio')
+        .select('-state')
+        .then((user) => {
+            return res.json(user)
+        }).catch((err) => {
+            return next(err)
+        })
 
+}
+
+exports.isExist = function(req, res, next) {
+    console.log('is Exist BaByyyyyy')
+    var userCards = []
+    User.findOne({ user: req.body.user })
+        .then((user) => {
+            console.log(user)
+            if(!user){
+                return next()
+            } else {
+                user.state.active = true
+                user.state.expireTime = 10
+                user.state.userCards = randomCard(user.state.deck, 2)
+                user.state.cpuCards = randomCard(user.state.deck, 2)
+                userCards = userCards.concat(user.state.userCards)
+                user.update(user)
+                    .then(() => {
+                        return res.json({ userCards: userCards })
+                    })
+                    .catch((err) => {
+                        return next(err)
+                    })
+            }
+        })
+        .catch((err) => {
+            return next(err)
+        })
 }
 
 exports.getUser = function(req, res, next, user) {
@@ -195,6 +236,8 @@ exports.getUser = function(req, res, next, user) {
                 return res.status(422).json({ error: 'User not found.'})
             } else if(!user.state.active) {
                 return res.status(422).json({ error: 'User is inactive.'})
+            } else if(user.state.expireTime <= 0) {
+                req.expire = true
             }
             req.user = user;
             next()

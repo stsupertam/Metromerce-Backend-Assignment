@@ -1,4 +1,5 @@
 const { dealCard } = require('../helper/cards')
+const { randomCard } = require('../helper/cards')
 const mongoose = require('mongoose')
 const State = require('./state.model');
 const uniqueValidator = require('mongoose-unique-validator')
@@ -23,6 +24,10 @@ var UserSchema = new Schema({
         default: 0
     },
     blackjack: {
+        type: Number,
+        default: 0
+    },
+    winRatio: {
         type: Number,
         default: 0
     },
@@ -86,8 +91,8 @@ UserSchema.pre('save', function(next) {
         var user = this
         var deck = createDeck()
 
-        user.state.userCards = randomTwoCard(deck)
-        user.state.cpuCards = randomTwoCard(deck)
+        user.state.userCards = randomCard(deck, 2)
+        user.state.cpuCards = randomCard(deck, 2)
         user.state.deck = deck
     }
     next()
