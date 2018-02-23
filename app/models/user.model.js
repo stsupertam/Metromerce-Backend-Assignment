@@ -1,3 +1,4 @@
+const { dealCard } = require('../helper/cards')
 const mongoose = require('mongoose')
 const State = require('./state.model');
 const uniqueValidator = require('mongoose-unique-validator')
@@ -25,7 +26,7 @@ var UserSchema = new Schema({
 }, { strict: true })
 
 var createDeck = function() {
-    var cards = []
+    var deck = []
     for(var i = 1; i <= 13; i++) {
         var char = ''
         switch(i) {
@@ -63,17 +64,15 @@ var createDeck = function() {
                 cardType: "pikes"
             },
         ]
-        cards = cards.concat(card)
+        deck = deck.concat(card)
     }
-    return cards
+    return deck
 }
 
-var randomTwoCard = function(cards) {
+var randomTwoCard = function(deck) {
     var randomCard = [] 
     for(var i = 1; i <= 2; i++) {
-        var randidx = Math.floor((Math.random() * cards.length))
-        randomCard.push(cards[randidx])
-        cards.splice(randidx, 1)
+        dealCard(deck, randomCard)
     }
     return randomCard
 }
@@ -81,11 +80,11 @@ var randomTwoCard = function(cards) {
 UserSchema.pre('save', function(next) {
     if(this.isNew) {
         var user = this
-        var cards = createDeck()
+        var deck = createDeck()
 
-        user.state.userCards = randomTwoCard(cards)
-        user.state.cpuCards = randomTwoCard(cards)
-        user.state.cards = cards
+        user.state.userCards = randomTwoCard(deck)
+        user.state.cpuCards = randomTwoCard(deck)
+        user.state.deck = deck
     }
     next()
 })

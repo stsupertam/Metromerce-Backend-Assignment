@@ -1,5 +1,41 @@
 const User = require('mongoose').model('User')
 const State = require('mongoose').model('State')
+const { dealCard } = require('../helper/cards')
+
+var calculatePoint = function(cards) {
+    var totalPoint = 0
+    for (var card in cpuCards) {
+        switch(card.cardName) {
+            case 'A':
+                totalPoint += Number(11)
+                break
+            case 'J':
+            case 'Q':
+            case 'K':
+                totalPoint += Number(10)
+                break
+            default:
+                totalPoint += Number(card.cardName)
+                break
+        }
+    }
+    return totalPoint
+
+}
+var result = function(state) {
+    var result = {}
+    var cpuCards = state.cpuCards
+    var userCards = state.userCards
+    var deck = state.deck
+
+    var userPoint = calculatePoint(userCards)
+    var cpuPoint = calculatePoint(cpuCards)
+    while(cpuPoint <= 17) {
+        dealCard(deck, cpuCards)
+    }
+
+    return result
+}
 
 exports.start = function(req, res, next) {
     var user = new User(req.body)
@@ -19,15 +55,15 @@ exports.start = function(req, res, next) {
 
 exports.hit = function(req, res, next) {
     var state = req.user.state
-    if(!state.cards) {
-        var randidx = Math.floor((Math.random() * state.cards.length))
-        state.userCards.push(state.cards[randidx])
-        state.cards.splice(randidx, 1)
+    var deck = state.deck
+    var userCards = state.userCards
+    if(deck.length !== 0) {
+        dealCard(deck, userCards)
         User.findOneAndUpdate({ 
             user: req.user.user
         }, { state: state})
         .then((user) => {
-            return res.json(state.userCards)
+            return res.json(userCards)
         })
         .catch((err) => {
             return next(err)
@@ -35,13 +71,17 @@ exports.hit = function(req, res, next) {
     } else {
         return res.json(
             {
-                state: state.userCards,
+                userCards: userCards,
                 error: 'Deck is empty.'
             })
     }
 }
 
 exports.stand = function(req, res, next) {
+    var state = req.user.state
+    var result = getResult(state)
+    console.log(result)
+    return res.json('Rock n roll babyyyy')
 
 }
 
