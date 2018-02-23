@@ -6,8 +6,8 @@ const Schema = mongoose.Schema
 var UserSchema = new Schema({
     user: {
         type: String,
-        //required: true,
-        //unique: true
+        required: true,
+        unique: true
     },
     win: {
         type: Number,

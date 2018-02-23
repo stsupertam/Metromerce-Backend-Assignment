@@ -18,20 +18,27 @@ exports.start = function(req, res, next) {
 }
 
 exports.hit = function(req, res, next) {
-    User(req.user).update({ 
-            state:{
-                $set: {
-                    active: false
-                }
-            }
-    })
-    .then((user) => {
-        return res.json(user)
-    })
-    .catch((err) => {
-        return next(err)
-    })
-    //return res.json('Let rock n roll babyyyy')
+    var state = req.user.state
+    if(!state.cards) {
+        var randidx = Math.floor((Math.random() * state.cards.length))
+        state.userCards.push(state.cards[randidx])
+        state.cards.splice(randidx, 1)
+        User.findOneAndUpdate({ 
+            user: req.user.user
+        }, { state: state})
+        .then((user) => {
+            return res.json(state.userCards)
+        })
+        .catch((err) => {
+            return next(err)
+        })
+    } else {
+        return res.json(
+            {
+                state: state.userCards,
+                error: 'Deck is empty.'
+            })
+    }
 }
 
 exports.stand = function(req, res, next) {
