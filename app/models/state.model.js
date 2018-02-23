@@ -2,14 +2,32 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 var StateSchema = new Schema({
-    card: [String],
-    userCard: [String],
-    cpuCard: [String],
+    cards: [
+        {
+            _id: false,
+            cardName: String,
+            cardType: String
+        }
+    ],
+    userCards: [
+        {
+            _id: false,
+            cardName: String,
+            cardType: String
+        }
+    ],
+    cpuCards: [
+        {
+            _id: false,
+            cardName: String,
+            cardType: String
+        }
+    ],
     expireTime: {
         type: Number,
         default: 10
     },
-    state: {
+    active: {
         type: Boolean,
         default: true
     }

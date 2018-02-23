@@ -5,13 +5,12 @@ exports.start = function(req, res, next) {
     var user = new User(req.body)
     var state = new State()
     user.state = state
-    console.log(state)
     user.validate()
         .then(() => {
             return user.save()
         })
         .then((state) => {
-            return res.json(user.state.userCard)
+            return res.json({ userCards: user.state.userCards })
         })
         .catch((err) => {
             return next(err)
@@ -19,7 +18,20 @@ exports.start = function(req, res, next) {
 }
 
 exports.hit = function(req, res, next) {
-    res.json(req.state)
+    User(req.user).update({ 
+            state:{
+                $set: {
+                    active: false
+                }
+            }
+    })
+    .then((user) => {
+        return res.json(user)
+    })
+    .catch((err) => {
+        return next(err)
+    })
+    //return res.json('Let rock n roll babyyyy')
 }
 
 exports.stand = function(req, res, next) {
@@ -32,11 +44,12 @@ exports.leaderboard = function(req, res, next) {
 
 exports.getUser = function(req, res, next, user) {
     User.findOne({ user: user })
-        .populate('state')
-        .exec()
-        .then((state) => {
-            req.state = state;
-            console.log(state)
+        .then((user) => {
+            if(!user){
+                return res.status(422).json({ error: 'User not found.'})
+            }
+            req.user = user;
+            next()
         })
         .catch((err) => {
             return next(err)

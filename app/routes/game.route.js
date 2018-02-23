@@ -5,9 +5,9 @@ module.exports = function(app) {
     app.route('/leaderboard')
         .get(game.leaderboard)
     app.route('/hit/:user')
-        .get(game.hit)
+        .put(game.hit)
     app.route('/stand/:user')
-        .get(game.stand)
+        .put(game.stand)
     app.param('user', game.getUser)
 
 }

@@ -6,8 +6,8 @@ const Schema = mongoose.Schema
 var UserSchema = new Schema({
     user: {
         type: String,
-        required: true,
-        unique: true
+        //required: true,
+        //unique: true
     },
     win: {
         type: Number,
@@ -25,7 +25,7 @@ var UserSchema = new Schema({
 }, { strict: true })
 
 var createDeck = function() {
-    var card = []
+    var cards = []
     for(var i = 1; i <= 13; i++) {
         var char = ''
         switch(i) {
@@ -45,19 +45,35 @@ var createDeck = function() {
                 char = i.toString()
                 break
         }
-        for(var j = 1; j <= 4; j++) {
-            card.push(char)
-        }
+        var card = [
+            {
+                cardName: char,
+                cardType: "hearts"
+            },
+            {
+                cardName: char,
+                cardType: "tiles"
+            },
+            {
+                cardName: char,
+                cardType: "clovers"
+            },
+            {
+                cardName: char,
+                cardType: "pikes"
+            },
+        ]
+        cards = cards.concat(card)
     }
-    return card
+    return cards
 }
 
-var randomTwoCard = function(card) {
+var randomTwoCard = function(cards) {
     var randomCard = [] 
     for(var i = 1; i <= 2; i++) {
-        var randidx = Math.floor((Math.random() * card.length))
-        randomCard.push(card[randidx])
-        card.splice(randidx, 1)
+        var randidx = Math.floor((Math.random() * cards.length))
+        randomCard.push(cards[randidx])
+        cards.splice(randidx, 1)
     }
     return randomCard
 }
@@ -65,11 +81,11 @@ var randomTwoCard = function(card) {
 UserSchema.pre('save', function(next) {
     if(this.isNew) {
         var user = this
-        var card = createDeck()
+        var cards = createDeck()
 
-        user.state.userCard = randomTwoCard(card)
-        user.state.cpuCard = randomTwoCard(card)
-        user.state.card = card
+        user.state.userCards = randomTwoCard(cards)
+        user.state.cpuCards = randomTwoCard(cards)
+        user.state.cards = cards
     }
     next()
 })
