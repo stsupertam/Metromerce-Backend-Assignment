@@ -149,14 +149,17 @@ exports.hit = function(req, res, next) {
 
 exports.stand = function(req, res, next) {
     var state = req.user.state
-    var userCards = state.userCards
-    var cpuCards = state.cpuCards
+    var userCards = state.userCards.slice()
+    var cpuCards = state.cpuCards.slice()
     var response = {
-        userCard: userCards,
-        cpuCard: cpuCards
+        userCards: userCards,
+        cpuCards: cpuCards
     }
     var result = getResult(state)
-    returnCardToDeck(state.deck, [ cpuCards, userCards ])
+
+    state.active = false
+    returnCardToDeck(state.deck, [ state.cpuCards, state.userCards ])
+
     if(result.win != 0) {
         response.message = 'You are the winner'
         if(result.blackjack != 0) {
@@ -187,8 +190,11 @@ exports.leaderboard = function(req, res, next) {
 exports.getUser = function(req, res, next, user) {
     User.findOne({ user: user })
         .then((user) => {
+            console.log(user.state.active)
             if(!user){
                 return res.status(422).json({ error: 'User not found.'})
+            } else if(!user.state.active) {
+                return res.status(422).json({ error: 'User is inactive.'})
             }
             req.user = user;
             next()

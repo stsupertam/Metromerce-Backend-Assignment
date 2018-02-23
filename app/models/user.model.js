@@ -22,7 +22,7 @@ var UserSchema = new Schema({
         type: Number,
         default: 0
     },
-    blackjace: {
+    blackjack: {
         type: Number,
         default: 0
     },
