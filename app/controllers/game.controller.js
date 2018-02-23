@@ -48,7 +48,8 @@ var getResult = function(state) {
         win: 0,
         lose: 0,
         draw: 0,
-        blackjack: 0
+        blackjack: 0,
+        totalPlay: 1
     }
     var cpuCards = state.cpuCards
     var userCards = state.userCards
@@ -155,7 +156,7 @@ exports.hit = function(req, res, next) {
 exports.stand = function(req, res, next) {
     var state = req.user.state
     var result = getResult(state)
-    var ratio = 100 * (req.user.win / ((req.user.win + req.user.lose) + 1))
+    var winRatio = (req.user.win + result.win) / (req.user.totalPlay + result.totalPlay)
     var userCards = state.userCards.slice()
     var cpuCards = state.cpuCards.slice()
     var response = {
@@ -169,15 +170,17 @@ exports.stand = function(req, res, next) {
         if(result.blackjack != 0) {
             response.message = 'Blackjack !!!'
         }
-    } else {
+    } else if(result.lose != 0) {
         response.message = 'You lose'
+    } else if(result.draw != 0) {
+        response.message = 'Draw'
     }
 
     state.active = false
     User.findOneAndUpdate({ user: req.user.user }, 
         { 
             $inc: result,
-            ratio: ratio,
+            winRatio: winRatio,
             state: state
         })
         .then((user) => {
@@ -190,7 +193,7 @@ exports.stand = function(req, res, next) {
 
 exports.leaderboard = function(req, res, next) {
     User.find({})
-        .sort('-ratio')
+        .sort('-winRatio')
         .select('-state')
         .then((user) => {
             return res.json(user)
@@ -201,7 +204,6 @@ exports.leaderboard = function(req, res, next) {
 }
 
 exports.isExist = function(req, res, next) {
-    console.log('is Exist BaByyyyyy')
     var userCards = []
     User.findOne({ user: req.body.user })
         .then((user) => {

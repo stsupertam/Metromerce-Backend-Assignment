@@ -31,6 +31,10 @@ var UserSchema = new Schema({
         type: Number,
         default: 0
     },
+    totalPlay: {
+        type: Number,
+        default: 0
+    },
     state: State
 }, { strict: true })
 

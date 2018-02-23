@@ -1,12 +1,12 @@
 module.exports = function(app) {
     var game = require('../controllers/game.controller')
-    app.route('/start')
+    app.route('/api/start')
         .post(game.isExist, game.start)
-    app.route('/leaderboard')
+    app.route('/api/leaderboard')
         .get(game.leaderboard)
-    app.route('/hit/:user')
+    app.route('/api/hit/:user')
         .put(game.hit)
-    app.route('/stand/:user')
+    app.route('/api/stand/:user')
         .put(game.stand)
     app.param('user', game.getUser)
 
