@@ -101,5 +101,11 @@ UserSchema.pre('save', function(next) {
     }
     next()
 })
+
+UserSchema.pre('find', function() {
+    console.log(this instanceof mongoose.Query); // true
+    this.start = Date.now();
+  });
+
 UserSchema.plugin(uniqueValidator)
 mongoose.model('User', UserSchema)

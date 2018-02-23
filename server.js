@@ -1,11 +1,14 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const mongoose = require('./config/mongoose')
 const express = require('./config/express')
+const task = require('./config/node-cron')
 
 var port = 5000
 var db = mongoose()
 var app = express()
 app.listen(port)
+
+task()
 
 module.exports = app
 

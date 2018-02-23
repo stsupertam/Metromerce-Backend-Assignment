@@ -157,6 +157,7 @@ exports.stand = function(req, res, next) {
     }
 
     state.active = false
+    state.expireTime = 10
     User.findOneAndUpdate({ user: req.user.user }, 
         { 
             $inc: result,
