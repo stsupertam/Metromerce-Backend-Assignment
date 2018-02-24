@@ -23,9 +23,9 @@ var StateSchema = new Schema({
             cardType: String
         }
     ],
-    expireTime: {
+    startTime: {
         type: Number,
-        default: 10
+        default: Date.now()
     },
     active: {
         type: Boolean,

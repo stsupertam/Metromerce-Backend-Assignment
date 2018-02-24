@@ -118,7 +118,7 @@ exports.hit = function(req, res, next) {
 
     dealCard(deck, userCards)
 
-    state.expireTime = 10
+    state.startTime = Date.now()
     User.findOneAndUpdate({ 
             user: req.user.user
         }, 
@@ -157,7 +157,7 @@ exports.stand = function(req, res, next) {
     }
 
     state.active = false
-    state.expireTime = 10
+    state.startTime = Date.now()
     User.findOneAndUpdate({ user: req.user.user }, 
         { 
             $inc: result,

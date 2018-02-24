@@ -6,16 +6,16 @@ const { randomCard } = require('../helper/cards')
 const { returnCardToDeck } = require('../helper/cards')
 
 var setUserTimeout = function(user) {
-    user.state.expireTime = 10
+    user.state.startTime = Date.now()
     user.state.active = false
-    user.state.lose = user.state.lose + 1
-    user.state.totalPlay = user.state.totalPlay + 1
-    user.state.winRatio = user.state.win / user.state.totalPlay
+    user.lose = user.lose + 1
+    user.totalPlay = user.totalPlay + 1
+    user.winRatio = user.win / user.totalPlay
     returnCardToDeck(user.state.deck, [ user.state.cpuCards, user.state.userCards ])
 }
 
 var setUserActive = function(user) {
-    user.state.expireTime = 10
+    user.state.startTime = Date.now()
     user.state.active = true
     user.state.userCards = randomCard(user.state.deck, 2)
     user.state.cpuCards = randomCard(user.state.deck, 2)
@@ -24,7 +24,6 @@ var setUserActive = function(user) {
 exports.isExist = function(req, res, next) {
     User.findOne({ user: req.body.user })
         .then((user) => {
-            console.log(user)
             if(!user){
                 return next()
             } else if (!user.state.active){
@@ -37,7 +36,7 @@ exports.isExist = function(req, res, next) {
                         return next(err)
                     })
             } else {
-                if(user.state.expireTime <= 0) {
+                if(Date.now() - user.state.startTime >= 10000) {
                     setUserTimeout(user)
                     setUserActive(user)
                     user.update(user)
@@ -65,7 +64,7 @@ exports.getUser = function(req, res, next, user) {
                 return res.status(422).json({ error: 'User not found.'})
             } else if(!user.state.active) {
                 return res.status(422).json({ error: 'User is inactive.'})
-            } else if(user.state.expireTime <= 0) {
+            } else if(Date.now() - user.state.startTime >= 10000) {
                 setUserTimeout(user)
                 user.update(user)
                     .then(() => {
