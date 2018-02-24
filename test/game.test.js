@@ -9,10 +9,7 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 const server = require('../server')
 const should = chai.should()
-var expect = chai.expect;
-var chaiAsPromised = require('chai-as-promised');
 
-chai.use(chaiAsPromised);
 chai.use(chaiHttp)
 
 describe('User', function() {
@@ -79,29 +76,29 @@ describe('User', function() {
                 },
                 {
                     cardName: '10'
-                },
+                }
             ]
             cpuCards = 
             [
                 {
-                    cardName: '2'
+                    cardName: '10'
                 },
                 {
-                    cardName: '3'
+                    cardName: 'J'
                 },
+                {
+                    cardName: '5'
+                }
             ]
             user.state = state
             user.save()
                 .then(() => {
                     return User.findOne({ user: request.user})
-                            .then((user) => {
-                                user.state.userCards = userCards
-                                user.state.cpuCards = userCards
-                                user.update()
-                            })
-                            .catch((err) => {
-                                done(err)
-                            })
+                })
+                .then((user) => {
+                    user.state.userCards = userCards
+                    user.state.cpuCards = cpuCards
+                    return user.update(user)
                 })
                 .then(() => {
                     chai.request(server)
@@ -148,14 +145,11 @@ describe('User', function() {
             user.save()
                 .then(() => {
                     return User.findOne({ user: request.user})
-                            .then((user) => {
-                                user.state.userCards = userCards
-                                user.state.cpuCards = userCards
-                                user.update()
-                            })
-                            .catch((err) => {
-                                done(err)
-                            })
+                })
+                .then((user) => {
+                    user.state.userCards = userCards
+                    user.state.cpuCards = cpuCards
+                    return user.update(user)
                 })
                 .then(() => {
                     chai.request(server)
@@ -205,14 +199,11 @@ describe('User', function() {
             user.save()
                 .then(() => {
                     return User.findOne({ user: request.user})
-                            .then((user) => {
-                                user.state.userCards = userCards
-                                user.state.cpuCards = userCards
-                                user.update()
-                            })
-                            .catch((err) => {
-                                done(err)
-                            })
+                })
+                .then((user) => {
+                    user.state.userCards = userCards
+                    user.state.cpuCards = cpuCards
+                    return user.update(user)
                 })
                 .then(() => {
                     chai.request(server)
@@ -259,14 +250,11 @@ describe('User', function() {
             user.save()
                 .then(() => {
                     return User.findOne({ user: request.user})
-                            .then((user) => {
-                                user.state.userCards = userCards
-                                user.state.cpuCards = userCards
-                                user.update()
-                            })
-                            .catch((err) => {
-                                done(err)
-                            })
+                })
+                .then((user) => {
+                    user.state.userCards = userCards
+                    user.state.cpuCards = cpuCards
+                    return user.update(user)
                 })
                 .then(() => {
                     chai.request(server)
