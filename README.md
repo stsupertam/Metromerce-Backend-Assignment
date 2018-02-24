@@ -1,5 +1,7 @@
 # Metromerce-Backend-Assignment
 
+[![Build Status](https://travis-ci.org/stsupertam/Metromerce-Backend-Assignment.svg?branch=master)](https://travis-ci.org/stsupertam/Metromerce-Backend-Assignment)
+
 ## Pre Requirements
 - Node.js
 - MongoDB
