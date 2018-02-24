@@ -1,5 +1,5 @@
 module.exports = {
-    debug: true,
+    debug: false,
     mongoUri: 'mongodb://localhost/test',
 }
   
