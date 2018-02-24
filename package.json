@@ -35,6 +35,6 @@
   },
   "scripts": {
     "start": "SET NODE_ENV=development && nodemon server.js",
-    "test": "mocha --timeout 30000"
+    "test": "mocha --timeout 15000 --exit"
   }
 }

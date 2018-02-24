@@ -25,7 +25,6 @@ var StateSchema = new Schema({
     ],
     startTime: {
         type: Number,
-        default: Date.now()
     },
     active: {
         type: Boolean,
