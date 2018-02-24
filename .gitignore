@@ -61,5 +61,3 @@ typings/
 
 config/env/development.js
 config/env/production.js
-
-test.js
