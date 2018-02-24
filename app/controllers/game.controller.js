@@ -98,6 +98,7 @@ var getResult = function(state) {
 exports.start = function(req, res, next) {
     var user = new User(req.body)
     var state = new State()
+    state.startTime = Date.now()
     user.state = state
     user.validate()
         .then(() => {

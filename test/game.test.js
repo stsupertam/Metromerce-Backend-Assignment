@@ -190,10 +190,10 @@ describe('User', function() {
             cpuCards = 
             [
                 {
-                    cardName: '2'
+                    cardName: 'A'
                 },
                 {
-                    cardName: '3'
+                    cardName: '10'
                 },
             ]
             user.save()
@@ -436,6 +436,7 @@ describe('User', function() {
             }
             var user = new User({user: 'test'})
             var state = new State()
+            state.startTime = Date.now()
             user.state = state
             user.save()
                 .then((user) => {
@@ -464,6 +465,7 @@ describe('User', function() {
             }
             var user = new User({user: 'test'})
             var state = new State()
+            state.startTime = Date.now()
             user.state = state
             user.save()
                 .then((user) => {
@@ -490,6 +492,7 @@ describe('User', function() {
             }
             var user = new User({user: 'test'})
             var state = new State()
+            state.startTime = Date.now()
             user.state = state
             user.save()
                 .then((user) => {
