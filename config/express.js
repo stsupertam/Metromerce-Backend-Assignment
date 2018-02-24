@@ -14,7 +14,6 @@ module.exports = function() {
     app.use(bodyParser.urlencoded({
         extended: true
     }))
-    app.set('view engine','ejs') 
     app.use(bodyParser.json())
     app.use(cors())
     require('../app/routes/game.route')(app)

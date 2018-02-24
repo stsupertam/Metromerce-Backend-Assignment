@@ -126,7 +126,7 @@ exports.hit = function(req, res, next) {
             state: state 
         })
         .then((user) => {
-            return res.json(userCards)
+            return res.json({ userCards: userCards })
         })
         .catch((err) => {
             return next(err)
