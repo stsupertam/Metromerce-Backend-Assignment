@@ -20,8 +20,11 @@
   ```
   $ yarn install
   ```
-
-4. start project
+4. create ./config/env/development.js (You can see example at ./config/env/example.development.js)
+  ```
+  $ cp ./config/env/example.development.js ./config/env/development.js
+  ```
+5. start project
   ```
   $ npm start
   ```
