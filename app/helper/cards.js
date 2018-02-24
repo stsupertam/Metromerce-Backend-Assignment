@@ -5,6 +5,49 @@ var dealCard = function(deck, hand) {
 }
 
 module.exports = {
+    createDeck: function() {
+        var deck = []
+        for(var i = 1; i <= 13; i++) {
+            var char = ''
+            switch(i) {
+                case 1:
+                    char = 'A'
+                    break
+                case 11:
+                    char = 'J'
+                    break
+                case 12:
+                    char = 'Q'
+                    break
+                case 13:
+                    char = 'K'
+                    break
+                default:
+                    char = i.toString()
+                    break
+            }
+            var card = [
+                {
+                    cardName: char,
+                    cardType: "hearts"
+                },
+                {
+                    cardName: char,
+                    cardType: "tiles"
+                },
+                {
+                    cardName: char,
+                    cardType: "clovers"
+                },
+                {
+                    cardName: char,
+                    cardType: "pikes"
+                },
+            ]
+            deck = deck.concat(card)
+        }
+        return deck
+    },
     dealCard: function(deck, hand) {
         if(deck.length !== 0) {
             dealCard(deck, hand)

@@ -107,7 +107,7 @@ exports.start = function(req, res, next) {
             return res.json({ userCards: user.state.userCards })
         })
         .catch((err) => {
-            return next(err)
+            return res.status(400).json(err)
         })
 }
 
